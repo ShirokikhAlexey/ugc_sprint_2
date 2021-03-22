@@ -15,7 +15,6 @@ services:
       - "9000:9000"
     volumes:
       - ./data/node1:/etc/clickhouse-server
-    entrypoint: sh "/etc/clickhouse-server/create_tables.sh"
     depends_on:
       - zookeeper
 
@@ -41,9 +40,11 @@ services:
     image: yandex/clickhouse-server:20.4
     container_name: clickhouse-node4
     hostname: clickhouse-node4
+    ports:
+      - "8124:8123"
+      - "9001:9000"
     volumes:
       - ./data/node4:/etc/clickhouse-server
-    entrypoint: sh "/etc/clickhouse-server/create_tables.sh"
     depends_on:
       - zookeeper
 
@@ -69,9 +70,11 @@ services:
     image: yandex/clickhouse-server:20.4
     container_name: clickhouse-node7
     hostname: clickhouse-node7
+    ports:
+      - "8125:8123"
+      - "9002:9000"
     volumes:
       - ./data/node7:/etc/clickhouse-server
-    entrypoint: sh "/etc/clickhouse-server/create_tables.sh"
     depends_on:
       - zookeeper
 
