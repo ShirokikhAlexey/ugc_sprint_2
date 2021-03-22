@@ -15,6 +15,7 @@ services:
       - "9000:9000"
     volumes:
       - ./data/node1:/etc/clickhouse-server
+    entrypoint: sh "/etc/clickhouse-server/create_tables.sh"
     depends_on:
       - zookeeper
 
@@ -42,6 +43,7 @@ services:
     hostname: clickhouse-node4
     volumes:
       - ./data/node4:/etc/clickhouse-server
+    entrypoint: sh "/etc/clickhouse-server/create_tables.sh"
     depends_on:
       - zookeeper
 
@@ -69,6 +71,7 @@ services:
     hostname: clickhouse-node7
     volumes:
       - ./data/node7:/etc/clickhouse-server
+    entrypoint: sh "/etc/clickhouse-server/create_tables.sh"
     depends_on:
       - zookeeper
 
