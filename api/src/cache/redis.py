@@ -1,17 +1,17 @@
 import json
-from uuid import UUID
 from functools import wraps
-from typing import Optional, List, Callable
 from socket import gaierror
+from typing import Optional, List, Callable
+from uuid import UUID
 
-from fastapi import Request
-from aioredis import Redis
 import backoff
+from aioredis import Redis
+from fastapi import Request
 
-from db import redis
 from cache.abstract import Cache
+from db import redis
 
-exceptions_list = (gaierror, )
+exceptions_list = (gaierror,)
 DEFAULT_TTL = 60
 
 
@@ -28,11 +28,12 @@ def default_response_keybuilder(func, query_args, *args, **kwargs) -> str:
             kwargs_key['query_params'] = v.query_params
     return f'response:{func.__module__}.{func.__name__}:{args}:{kwargs_key}'
 
+
 @backoff.on_exception(backoff.expo, exceptions_list, max_tries=10)
 def cache_response(
-    ttl: Optional[int] = DEFAULT_TTL,
-    query_args: List[str] = [],
-    key_builder: Callable = default_response_keybuilder,
+        ttl: Optional[int] = DEFAULT_TTL,
+        query_args: List[str] = [],
+        key_builder: Callable = default_response_keybuilder,
 ):
     """
     Декоратор для кеширования ответа метода API
@@ -40,6 +41,7 @@ def cache_response(
     ttl: время жизни записи в кеш
     query_args: аргументы метода API, которые меняют его поведение
     """
+
     def wrapper(func):
         @wraps(func)
         async def inner(*args, **kwargs):
@@ -54,7 +56,9 @@ def cache_response(
             ret = await func(*args, **kwargs)
             await cache.set(cache_key, ret.json(), expire=ttl)
             return ret
+
         return inner
+
     return wrapper
 
 
@@ -85,4 +89,5 @@ class RedisCache(Cache):
 def get_redis_cache(keybuilder: Callable[[UUID], str], ttl: int = DEFAULT_TTL):
     def inner():
         return RedisCache(redis.redis, keybuilder, ttl)
+
     return inner

@@ -1,14 +1,14 @@
-from uuid import UUID
 from typing import List, Optional
+from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException, Query, Request
 from fastapi import status
 
-from services.person import PersonService, get_person_service
-from services.film import FilmService, get_film_service
 from api.v1.common import pagination
 from api.v1.models import PersonList, Person, PaginatedPersonShortList, PersonShort, FilmShortList, FilmShort
 from cache.redis import cache_response
+from services.film import FilmService, get_film_service
+from services.person import PersonService, get_person_service
 
 router = APIRouter()
 
@@ -16,9 +16,9 @@ router = APIRouter()
 @router.get('/{person_id}', response_model=Person)
 # @cache_response(ttl=60 * 5, query_args=['person_id'])
 async def person_details(
-    person_id: UUID,
-    person_service: PersonService = Depends(get_person_service),
-    film_service: FilmService = Depends(get_film_service)
+        person_id: UUID,
+        person_service: PersonService = Depends(get_person_service),
+        film_service: FilmService = Depends(get_film_service)
 ) -> Person:
     """
     Детальная информация о персоне
@@ -36,10 +36,10 @@ async def person_details(
 @router.get('/{person_id}/film', response_model=FilmShortList)
 @cache_response(ttl=60 * 5, query_args=['person_id'])
 async def person_films(
-    person_id: UUID,
-    person_service: PersonService = Depends(get_person_service),
-    film_service: FilmService = Depends(get_film_service),
-    role: Optional[str] = Query(None, description="Фильтрация по роли персоны в фильме"),
+        person_id: UUID,
+        person_service: PersonService = Depends(get_person_service),
+        film_service: FilmService = Depends(get_film_service),
+        role: Optional[str] = Query(None, description="Фильтрация по роли персоны в фильме"),
 ) -> FilmShortList:
     """
     Фильмы, в которых участвовала персона
@@ -65,10 +65,10 @@ async def person_films(
 @router.get('/search/', response_model=PersonList)
 @cache_response(ttl=60 * 5, query_args=['query'])
 async def persons_search(
-    request: Request,
-    query: str,
-    person_service: PersonService = Depends(get_person_service),
-    film_service: FilmService = Depends(get_film_service)
+        request: Request,
+        query: str,
+        person_service: PersonService = Depends(get_person_service),
+        film_service: FilmService = Depends(get_film_service)
 ) -> List[Person]:
     """
     Поиск по персонам
@@ -90,9 +90,9 @@ async def persons_search(
 @router.get('/', response_model=PaginatedPersonShortList)
 @cache_response(ttl=60 * 5, query_args=['sort'])
 async def persons(
-    request: Request,
-    person_service: PersonService = Depends(get_person_service),
-    pagination: dict = Depends(pagination)
+        request: Request,
+        person_service: PersonService = Depends(get_person_service),
+        pagination: dict = Depends(pagination)
 ) -> List[Person]:
     """
     Список персон

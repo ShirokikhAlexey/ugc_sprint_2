@@ -1,14 +1,14 @@
-from enum import Enum
-from uuid import UUID
-from typing import List, Optional, Tuple
-from functools import lru_cache
 from collections import OrderedDict
+from enum import Enum
+from functools import lru_cache
+from typing import List, Optional, Tuple
+from uuid import UUID
 
 from fastapi import Depends
 
-from db import redis
 from cache.abstract import Cache
 from cache.redis import RedisCache
+from db import redis
 from models.person import Person
 from storage.abstract import Storage
 from storage.elastic import get_elastic_storage
@@ -27,7 +27,6 @@ def persons_keybuilder(person_id: UUID) -> str:
 
 
 def _build_person_serch_query(name: str) -> List:
-
     query = {
         'query': {
             'match': {
@@ -123,11 +122,10 @@ def get_person_redis_cache():
     return RedisCache(redis.redis, persons_keybuilder)
 
 
-@ lru_cache()
+@lru_cache()
 def get_person_service(
         cache: Cache = Depends(get_person_redis_cache),
         storage: Storage = Depends(get_elastic_storage)
-
 
 ) -> PersonService:
     return PersonService(cache,

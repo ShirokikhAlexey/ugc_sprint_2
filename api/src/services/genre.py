@@ -1,13 +1,13 @@
-from functools import lru_cache
-from uuid import UUID
-from typing import Optional, List, Tuple
 from collections import OrderedDict
+from functools import lru_cache
+from typing import Optional, List, Tuple
+from uuid import UUID
 
 from fastapi import Depends
 
-from db import redis
-from cache.redis import RedisCache
 from cache.abstract import Cache
+from cache.redis import RedisCache
+from db import redis
 from models.genre import Genre
 from storage.abstract import Storage
 from storage.elastic import get_elastic_storage
@@ -20,7 +20,6 @@ def genres_keybuilder(genre_id: UUID) -> str:
 
 
 def _build_genre_serch_query(name: str) -> List:
-
     query = {
         'query': {
             'match': {

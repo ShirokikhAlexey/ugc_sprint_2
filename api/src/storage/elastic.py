@@ -1,15 +1,15 @@
 from typing import List, Dict, Tuple, Optional
 from uuid import UUID
 
+import backoff
 from elasticsearch import AsyncElasticsearch
 from elasticsearch.exceptions import ConnectionError, ConnectionTimeout
-import backoff
 
-from storage.abstract import Storage
 from db import elastic
+from storage.abstract import Storage
 
+exceptions_list = (ConnectionError, ConnectionTimeout,)
 
-exceptions_list = (ConnectionError, ConnectionTimeout, )
 
 class ElasticStorage(Storage):
 
@@ -26,13 +26,12 @@ class ElasticStorage(Storage):
         docs = [doc['_source'] for doc in resp['docs'] if doc['found']]
         return docs
 
-    
     @backoff.on_exception(backoff.expo, exceptions_list, max_tries=10)
     async def search(
-        self,
-        index: str,
-        body: Optional[Dict] = None,
-        params: Optional[Dict] = None,
+            self,
+            index: str,
+            body: Optional[Dict] = None,
+            params: Optional[Dict] = None,
     ) -> Tuple[int, List[UUID]]:
         """
         Поиск по объектам
@@ -47,10 +46,10 @@ class ElasticStorage(Storage):
 
     @backoff.on_exception(backoff.expo, exceptions_list, max_tries=10)
     async def msearch(
-        self,
-        index: str,
-        body: Optional[List[Dict]] = None,
-        params: Optional[Dict] = None,
+            self,
+            index: str,
+            body: Optional[List[Dict]] = None,
+            params: Optional[Dict] = None,
     ) -> List[Optional[List[UUID]]]:
         """
         Несколько поисковых запросов в одном

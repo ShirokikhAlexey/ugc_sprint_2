@@ -1,13 +1,13 @@
-from uuid import UUID
 from typing import List
+from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException, Request
 from fastapi import status
 
-from services.genre import GenreService, get_genre_service
-from api.v1.models import Genre, PaginatedGenreList, GenreList
 from api.v1.common import pagination
+from api.v1.models import Genre, PaginatedGenreList, GenreList
 from cache.redis import cache_response
+from services.genre import GenreService, get_genre_service
 
 router = APIRouter()
 
@@ -15,8 +15,8 @@ router = APIRouter()
 @router.get('/{genre_id}', response_model=Genre)
 @cache_response(ttl=60 * 5, query_args=['genre_id'])
 async def genre_details(
-    genre_id: UUID,
-    genre_service: GenreService = Depends(get_genre_service)
+        genre_id: UUID,
+        genre_service: GenreService = Depends(get_genre_service)
 ) -> Genre:
     """
     Детальная информация о жанре
@@ -32,9 +32,9 @@ async def genre_details(
 @router.get('/search/', response_model=GenreList)
 @cache_response(ttl=60 * 5, query_args=['query'])
 async def genres_search(
-    request: Request,
-    query: str,
-    genre_service: GenreService = Depends(get_genre_service)
+        request: Request,
+        query: str,
+        genre_service: GenreService = Depends(get_genre_service)
 ) -> List[Genre]:
     """
     Поиск по персонам
@@ -51,9 +51,9 @@ async def genres_search(
 @router.get('/', response_model=PaginatedGenreList)
 @cache_response(ttl=60 * 5, query_args=['sort'])
 async def genres(
-    request: Request,
-    genre_service: GenreService = Depends(get_genre_service),
-    pagination: dict = Depends(pagination)
+        request: Request,
+        genre_service: GenreService = Depends(get_genre_service),
+        pagination: dict = Depends(pagination)
 ) -> List[Genre]:
     """
     Список жанров
