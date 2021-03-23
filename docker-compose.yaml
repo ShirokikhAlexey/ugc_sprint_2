@@ -46,6 +46,6 @@ services:
       - API_HOST=http://backend
       - API_PORT=8888
     ports:
-      - 80:80
+      - 0.0.0.0:80:80
     restart: on-failure
 
