@@ -1,9 +1,39 @@
 # Проектная работа 8 спринта
 
-Проектные работы в этом модуле выполняются в команда по 3 человека. Процесс обучения аналогичен сервису, где вы изучали асинхронное программирование. Роли в команде и отправка работы на ревью не меняются.
+## Запуск приложения
 
-Распределение по командам подготовит команда сопровождения. Куратор поделится с вами списками в Slack в канале `#breaking_news`.
+1. Поднимаем ElasticSearch, Redis и API
 
-Командный модуль так же означает возвращение демо с наставником.
+```bash
+docker-compose -f docker-compose.yaml up -d --build
+```
 
-Задания на спринт вы найдёте внутри тем.
+2. Создаём схему схемы для индексов *movies*, *genres* и *persons* в ElasticSearch.
+
+```bash
+/api/utils/create_es_schemas.sh
+```
+
+Приложение будет доступно на http://localhost:8888/
+OpenAPI схема: http://localhost:8888/api/openapi
+
+## Тестирование
+
+### Функциональные тесты
+
+```bash
+PYTHONPATH="api/src" python -m pytest api_tests/functional
+```
+
+### Интеграционные тесты
+
+```bash
+docker-compose -f api_tests/docker-compose.yaml up -d --build
+PYTHONPATH="api/src" python -m pytest api_tests/integration
+```
+
+### Construction in Progress
+
+Кафка пока запускается через /kafka/docker-compose.yml
+
+ClickHouse пока запускается через /clickhouse/docker-compose.yml

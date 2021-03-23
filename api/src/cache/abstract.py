@@ -2,7 +2,6 @@ from abc import ABC, abstractmethod
 from typing import Optional
 from uuid import UUID
 
-
 DEFAULT_TTL = 60
 
 

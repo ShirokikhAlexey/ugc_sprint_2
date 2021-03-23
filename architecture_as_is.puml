@@ -1,0 +1,38 @@
+@startuml
+skinparam componentStyle uml2
+interface "Внешний доступ" as FastApiInterface
+interface "Внешний доступ" as AuthApiInterface
+interface "Доступ по\nVPN" as DjangoAdminInterface
+component DjangoAdmin
+component etl_pg_es [
+Etl Pg to Es process
+]
+component FastAPi
+component AuthAPi
+database pg_movies_data [
+movies data
+(postgresql)
+]
+database es_movies_data [
+movies data
+(ElasticSearch)
+]
+database pg_users_data [
+users data
+(postgresql)
+]
+
+DjangoAdminInterface - DjangoAdmin 
+DjangoAdmin -> pg_movies_data 
+pg_movies_data -> etl_pg_es
+etl_pg_es -right-> es_movies_data: http
+es_movies_data <- FastAPi: http
+AuthApiInterface -up- AuthAPi 
+FastAPi <-> AuthAPi: grpc
+FastApiInterface -down-> FastAPi
+AuthAPi -> pg_users_data
+note bottom of etl_pg_es : Процесс для переноса данных в ElasticSearch
+note bottom of DjangoAdmin : CRUD для кинопроизведений
+note top of FastAPi : Сервис получения данных о фильмах
+note top of AuthAPi : Сервис авторизации пользователей
+@enduml

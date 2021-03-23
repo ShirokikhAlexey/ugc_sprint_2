@@ -1,13 +1,13 @@
-from uuid import UUID
 from typing import List, Optional
+from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException, Query, Request
 from fastapi import status
 
-from services.film import FilmService, get_film_service, SortBy, FilterBy
+from api.v1.common import pagination
 from api.v1.models import FilmShort, Film, PaginatedFilmShortList, FilmShortList
 from cache.redis import cache_response
-from api.v1.common import pagination
+from services.film import FilmService, get_film_service, SortBy, FilterBy
 
 router = APIRouter()
 
@@ -15,8 +15,8 @@ router = APIRouter()
 @router.get('/{film_id}', response_model=Film)
 @cache_response(ttl=60 * 5, query_args=['film_id'])
 async def film_details(
-    film_id: UUID,
-    film_service: FilmService = Depends(get_film_service)
+        film_id: UUID,
+        film_service: FilmService = Depends(get_film_service)
 ) -> Film:
     """
     Детальная информация о фильме
@@ -32,12 +32,12 @@ async def film_details(
 @router.get('/', response_model=PaginatedFilmShortList)
 @cache_response(ttl=60 * 5, query_args=['sort'])
 async def films(
-    request: Request,
-    film_service: FilmService = Depends(get_film_service),
-    sort: Optional[str] = Query(None,
-                                description='Сортировка по аттрибуту фильма',
-                                regex='^[-+].+$'),
-    pagination: dict = Depends(pagination)
+        request: Request,
+        film_service: FilmService = Depends(get_film_service),
+        sort: Optional[str] = Query(None,
+                                    description='Сортировка по аттрибуту фильма',
+                                    regex='^[-+].+$'),
+        pagination: dict = Depends(pagination)
 ) -> List[FilmShort]:
     """
     Список фильмов.
@@ -71,9 +71,9 @@ async def films(
 @router.get('/search/', response_model=FilmShortList)
 @cache_response(ttl=60 * 5, query_args=['query'])
 async def films_search(
-    request: Request,
-    query: str,
-    film_service: FilmService = Depends(get_film_service)
+        request: Request,
+        query: str,
+        film_service: FilmService = Depends(get_film_service)
 ) -> List[FilmShort]:
     """
     Поиск по фильмам

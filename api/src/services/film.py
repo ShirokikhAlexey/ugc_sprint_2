@@ -1,20 +1,20 @@
 import re
+from collections import OrderedDict
+from enum import Enum
 from functools import lru_cache
 from typing import Optional, List, Dict, Tuple
 from uuid import UUID
-from enum import Enum
-from collections import OrderedDict
 
 from fastapi import Depends
-from starlette.datastructures import QueryParams
 from pydantic import BaseModel
+from starlette.datastructures import QueryParams
 
-from db import redis
-from cache.redis import RedisCache
 from cache.abstract import Cache
-from storage.elastic import get_elastic_storage
-from storage.abstract import Storage
+from cache.redis import RedisCache
+from db import redis
 from models.film import Film
+from storage.abstract import Storage
+from storage.elastic import get_elastic_storage
 
 DEFAULT_LIST_SIZE = 1000
 FILMS_INDEX = 'movies'
@@ -131,7 +131,6 @@ def _build_person_role_query(person_id: UUID) -> List:
 
 
 def _build_film_serch_query(query: str) -> List:
-
     query = {
         'query': {
             'multi_match': {
@@ -172,7 +171,7 @@ class FilmService:
                    page_number: int,
                    page_size: int,
                    sort_by: Optional[SortBy] = None,
-                   filter_by: Optional[FilterBy] = None,) -> Tuple[int, List[Film]]:
+                   filter_by: Optional[FilterBy] = None, ) -> Tuple[int, List[Film]]:
         """
         Возвращает общее количество фильмов и список фильмов с учётом сортировки и фильтрации.
         """

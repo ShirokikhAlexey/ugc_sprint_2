@@ -141,5 +141,4 @@ cython_debug/
 .vscode
 .flake8
 
-
-.idea/
+/.idea/
