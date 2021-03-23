@@ -2,10 +2,10 @@
 
 ## Запуск приложения
 
-1. Поднимаем ElasticSearch, Redis и API
+1. Поднимаем ElasticSearch, Redis, Kafka и API
 
 ```bash
-docker-compose -f docker-compose.yaml up -d --build
+docker-compose -f docker-compose.yaml -f kafka/docker-compose.yml up -d --build
 ```
 
 2. Создаём схему схемы для индексов *movies*, *genres* и *persons* в ElasticSearch.
