@@ -40,7 +40,58 @@ services:
     image: yandex/clickhouse-server:20.4
     container_name: clickhouse-node4
     hostname: clickhouse-node4
+    ports:
+      - "8124:8123"
+      - "9001:9000"
     volumes:
       - ./data/node4:/etc/clickhouse-server
+    depends_on:
+      - zookeeper
+
+  clickhouse-node5:
+    image: yandex/clickhouse-server:20.4
+    container_name: clickhouse-node5
+    hostname: clickhouse-node5
+    volumes:
+      - ./data/node5:/etc/clickhouse-server
+    depends_on:
+      - zookeeper
+
+  clickhouse-node6:
+    image: yandex/clickhouse-server:20.4
+    container_name: clickhouse-node6
+    hostname: clickhouse-node6
+    volumes:
+      - ./data/node6:/etc/clickhouse-server
+    depends_on:
+      - zookeeper
+
+  clickhouse-node7:
+    image: yandex/clickhouse-server:20.4
+    container_name: clickhouse-node7
+    hostname: clickhouse-node7
+    ports:
+      - "8125:8123"
+      - "9002:9000"
+    volumes:
+      - ./data/node7:/etc/clickhouse-server
+    depends_on:
+      - zookeeper
+
+  clickhouse-node8:
+    image: yandex/clickhouse-server:20.4
+    container_name: clickhouse-node8
+    hostname: clickhouse-node8
+    volumes:
+      - ./data/node8:/etc/clickhouse-server
+    depends_on:
+      - zookeeper
+
+  clickhouse-node9:
+    image: yandex/clickhouse-server:20.4
+    container_name: clickhouse-node9
+    hostname: clickhouse-node9
+    volumes:
+      - ./data/node9:/etc/clickhouse-server
     depends_on:
       - zookeeper
