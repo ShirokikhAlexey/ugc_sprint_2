@@ -37,8 +37,8 @@ CREATE TABLE if not exists kafka_queue (
 
 client.execute('''
 CREATE MATERIALIZED VIEW IF NOT EXISTS views_consumer TO test_kafka.views
-AS SELECT substring(_key, 1, 6) AS user_id, 
-substring(_key, 8, 16) AS movie_id, 
+AS SELECT substring(_key, 1, 6) AS user_id,
+substring(_key, 8, 16) AS movie_id,
 toDateTime(value) as value_timestamp,
 _timestamp as created_at
 FROM kafka_queue;
