@@ -43,4 +43,5 @@ jobs:
     
     - name: Test with pytest
       run: |
-        PYTHONPATH="api/src" pytest api_tests/functional
+        # PYTHONPATH="api/src" pytest api_tests/functional
+        PYTHONPATH="api/src" python -m pytest api_tests/functional
