@@ -5,14 +5,10 @@ KAFKA_HOST_AND_PORT = 'broker:29092'
 
 client = Client(host=CLICKHOUSE_HOST)
 
-print(client.execute('SHOW DATABASES'))
+print('Creating ETL Databases')
 
 client.execute(
-    'CREATE DATABASE IF NOT EXISTS test_kafka ON CLUSTER company_cluster'
-)
-
-client.execute(
-    '''CREATE TABLE IF NOT EXISTS test_kafka.views ON CLUSTER company_cluster
+    '''CREATE TABLE IF NOT EXISTS default.views
 (
     user_id String,
     movie_id String,
@@ -36,10 +32,12 @@ CREATE TABLE if not exists kafka_queue (
 ''')
 
 client.execute('''
-CREATE MATERIALIZED VIEW IF NOT EXISTS views_consumer TO test_kafka.views
+CREATE MATERIALIZED VIEW IF NOT EXISTS views_consumer TO default.views
 AS SELECT substring(_key, 1, 6) AS user_id, 
 substring(_key, 8, 16) AS movie_id, 
 toDateTime(value) as value_timestamp,
 _timestamp as created_at
 FROM kafka_queue;
 ''')
+
+print('Databases and Tables created')

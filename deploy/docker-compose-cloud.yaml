@@ -1,0 +1,41 @@
+version: "3"
+
+volumes:
+  data01:
+    driver: local
+
+services:
+  redis:
+    image: redis:6.0.9
+    container_name: redis
+
+  es01:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.10.0
+    container_name: es01
+    environment:
+      - node.name=es01
+      - discovery.type=single-node
+      - bootstrap.memory_lock=true
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - data01:/usr/share/elasticsearch/data
+
+  backend:
+    container_name: backend
+    image: cr.yandex/crp5duht0q6vjok66upp/ugc/backend:1.0
+    depends_on:
+      - es01
+      - redis
+  nginx:
+    container_name: nginx
+    image: cr.yandex/crp5duht0q6vjok66upp/ugc/nginx:2.0
+    environment:
+      - API_HOST=http://backend
+      - API_PORT=8888
+    ports:
+      - 0.0.0.0:80:80
+    restart: on-failure
+
