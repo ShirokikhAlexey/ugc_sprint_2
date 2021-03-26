@@ -123,7 +123,7 @@ class GenreService:
         return await self.get_by_ids(genre_ids)
 
 
-@lru_cache
+@lru_cache()
 def get_genre_redis_cache():
     return RedisCache(redis.redis, genres_keybuilder)
 

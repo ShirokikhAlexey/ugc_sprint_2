@@ -245,7 +245,7 @@ class FilmService:
         return await self.get_by_ids(person_ids)
 
 
-@lru_cache
+@lru_cache()
 def get_film_redis_cache():
     return RedisCache(redis.redis, films_keybuilder)
 
