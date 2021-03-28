@@ -50,7 +50,7 @@ jobs:
     
     - uses: actions/upload-artifact@v2
       with:
-        name: my-artifact
+        name: flake8-html-report
         path: /tmp/flake8-html-report/
     
     - name: Test with pytest
