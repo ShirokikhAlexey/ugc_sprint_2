@@ -34,6 +34,15 @@
     <timezone>Europe/Moscow</timezone>
     <mlock_executable>false</mlock_executable>
 
+    <prometheus>
+        <endpoint>/metrics</endpoint>
+        <port>8002</port>
+        <metrics>true</metrics>
+        <events>true</events>
+        <asynchronous_metrics>true</asynchronous_metrics>
+    </prometheus>
+
+
     <remote_servers>
         <company_cluster>
             <shard>
@@ -92,7 +101,7 @@
 
     <zookeeper>
         <node index="1">
-            <host>zookeeper</host>
+            <host>zookeeper_clickhouse</host>
             <port>2181</port>
         </node>
     </zookeeper>

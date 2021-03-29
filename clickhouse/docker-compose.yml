@@ -1,10 +1,10 @@
 version: '3.5'
 
 services:
-  zookeeper:
+  zookeeper_clickhouse:
     image: zookeeper:3.5
-    container_name: zookeeper
-    hostname: zookeeper
+    container_name: zookeeper_clickhouse
+    hostname: zookeeper_clickhouse
 
   clickhouse-node1:
     image: yandex/clickhouse-server:20.4
@@ -13,28 +13,41 @@ services:
     ports:
       - "8123:8123"
       - "9000:9000"
+      - "8001:8001"
     volumes:
       - ./data/node1:/etc/clickhouse-server
     depends_on:
-      - zookeeper
+      - zookeeper_clickhouse
+    logging:
+      driver: none
 
   clickhouse-node2:
     image: yandex/clickhouse-server:20.4
     container_name: clickhouse-node2
     hostname: clickhouse-node2
+    ports:
+      - "8002:8002"
+      - "9001:9000"
     volumes:
       - ./data/node2:/etc/clickhouse-server
     depends_on:
-      - zookeeper
+      - zookeeper_clickhouse
+    logging:
+      driver: none
 
   clickhouse-node3:
     image: yandex/clickhouse-server:20.4
     container_name: clickhouse-node3
     hostname: clickhouse-node3
+    ports:
+      - "8003:8003"
+      - "9002:9000"
     volumes:
       - ./data/node3:/etc/clickhouse-server
     depends_on:
-      - zookeeper
+      - zookeeper_clickhouse
+    logging:
+      driver: none
 
   clickhouse-node4:
     image: yandex/clickhouse-server:20.4
@@ -42,29 +55,42 @@ services:
     hostname: clickhouse-node4
     ports:
       - "8124:8123"
-      - "9001:9000"
+      - "9003:9000"
+      - "8004:8004"
     volumes:
       - ./data/node4:/etc/clickhouse-server
     depends_on:
-      - zookeeper
+      - zookeeper_clickhouse
+    logging:
+      driver: none
 
   clickhouse-node5:
     image: yandex/clickhouse-server:20.4
     container_name: clickhouse-node5
     hostname: clickhouse-node5
+    ports:
+      - "8005:8005"
+      - "9004:9000"
     volumes:
       - ./data/node5:/etc/clickhouse-server
     depends_on:
-      - zookeeper
+      - zookeeper_clickhouse
+    logging:
+      driver: none
 
   clickhouse-node6:
     image: yandex/clickhouse-server:20.4
     container_name: clickhouse-node6
     hostname: clickhouse-node6
+    ports:
+      - "8006:8006"
+      - "9005:9000"
     volumes:
       - ./data/node6:/etc/clickhouse-server
     depends_on:
-      - zookeeper
+      - zookeeper_clickhouse
+    logging:
+      driver: none
 
   clickhouse-node7:
     image: yandex/clickhouse-server:20.4
@@ -72,26 +98,49 @@ services:
     hostname: clickhouse-node7
     ports:
       - "8125:8123"
-      - "9002:9000"
+      - "9006:9000"
+      - "8007:8007"
     volumes:
       - ./data/node7:/etc/clickhouse-server
     depends_on:
-      - zookeeper
+      - zookeeper_clickhouse
+    logging:
+      driver: none
 
   clickhouse-node8:
     image: yandex/clickhouse-server:20.4
     container_name: clickhouse-node8
     hostname: clickhouse-node8
+    ports:
+      - "8008:8008"
+      - "9007:9000"
     volumes:
       - ./data/node8:/etc/clickhouse-server
     depends_on:
-      - zookeeper
+      - zookeeper_clickhouse
+    logging:
+      driver: none
 
   clickhouse-node9:
     image: yandex/clickhouse-server:20.4
     container_name: clickhouse-node9
     hostname: clickhouse-node9
+    ports:
+      - "8009:8009"
+      - "9008:9000"
     volumes:
       - ./data/node9:/etc/clickhouse-server
     depends_on:
-      - zookeeper
+      - zookeeper_clickhouse
+    logging:
+      driver: none
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    logging:
+      driver: none
