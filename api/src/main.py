@@ -9,7 +9,7 @@ from elasticsearch import AsyncElasticsearch
 from fastapi import FastAPI
 from fastapi.responses import ORJSONResponse
 from sentry_sdk.integrations.asgi import SentryAsgiMiddleware
-
+from typing import Optional
 from api.v1 import film, genre, person
 from core import config
 from core.logger import LOGGING
@@ -50,11 +50,15 @@ app.add_middleware(
 
 class RequestIdFilter(logging.Filter):
     def filter(self, record):
-        record.request_id = get_request_id()
+        r_id: Optional[str] = get_request_id()
+        if isinstance(r_id, str) and r_id.startswith(prefix="Generated-"):
+            r_id = None
+        record.request_id = r_id
         return True
 
 
-uvicorn.config.logger.addHandler(logstash.LogstashHandler(host="localhost", port=5044, version=1))
+#uvicorn.config.logger.addHandler(logging.FileHandler(config.LOGS_PATH, mode="w"))
+
 uvicorn.config.logger.addFilter(RequestIdFilter())
 
 app.include_router(film.router, prefix='/v1/film', tags=['film'])

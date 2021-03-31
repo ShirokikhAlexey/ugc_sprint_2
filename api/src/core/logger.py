@@ -1,5 +1,8 @@
+from os import getenv
 LOG_FORMAT = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+
 LOG_DEFAULT_HANDLERS = ['console', ]
+LOGS_PATH = getenv('LOGS_PATH', 'logs.log')
 
 # В логгере настраивается логгирование uvicorn-сервера.
 # Про логирование в Python можно прочитать в документации
@@ -12,6 +15,10 @@ LOGGING = {
     'formatters': {
         'verbose': {
             'format': LOG_FORMAT
+        },
+        'json': {
+            "class": "pythonjsonlogger.jsonlogger.JsonFormatter",
+            "format": "%(asctime)s %(name)s %(levelname)s %(message)s %(request_id)s"
         },
         'default': {
             '()': 'uvicorn.logging.DefaultFormatter',
@@ -27,7 +34,14 @@ LOGGING = {
         'console': {
             'level': 'DEBUG',
             'class': 'logging.StreamHandler',
-            'formatter': 'verbose',
+            'formatter': 'json',
+        },
+        'filebeat': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': LOGS_PATH,
+            'mode': 'a',
+            'formatter': 'json',
         },
         'default': {
             'formatter': 'default',
