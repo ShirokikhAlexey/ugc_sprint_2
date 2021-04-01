@@ -9,11 +9,11 @@ from fastapi import Depends
 from pydantic import BaseModel
 from starlette.datastructures import QueryParams
 
-from cache.abstract import Cache
+from cache.abstract_cache import Cache
 from cache.redis import RedisCache
 from db import get_redis
 from models.film import Film
-from storage.abstract import Storage
+from storage.abstract_storage import Storage
 from storage.elastic import get_elastic_storage
 
 DEFAULT_LIST_SIZE = 1000

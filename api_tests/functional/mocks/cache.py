@@ -1,7 +1,7 @@
 from typing import Optional
 from uuid import UUID
 
-from cache.abstract import Cache
+from cache.abstract_cache import Cache
 
 
 class MockEmptyCache(Cache):

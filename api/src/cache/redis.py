@@ -8,7 +8,7 @@ import backoff
 from aioredis import Redis
 from fastapi import Request
 
-from cache.abstract import Cache
+from cache.abstract_cache import Cache
 from db import get_redis
 
 exceptions_list = (gaierror,)

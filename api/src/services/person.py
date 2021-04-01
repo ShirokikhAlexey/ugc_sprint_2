@@ -6,11 +6,11 @@ from uuid import UUID
 
 from fastapi import Depends
 
-from cache.abstract import Cache
+from cache.abstract_cache import Cache
 from cache.redis import RedisCache
 from db import get_redis
 from models.person import Person
-from storage.abstract import Storage
+from storage.abstract_storage import Storage
 from storage.elastic import get_elastic_storage
 
 PERSONS_INDEX = 'persons'

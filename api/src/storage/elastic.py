@@ -6,7 +6,7 @@ from elasticsearch import AsyncElasticsearch
 from elasticsearch.exceptions import ConnectionError, ConnectionTimeout
 
 from db import get_elastic
-from storage.abstract import Storage
+from storage.abstract_storage import Storage
 
 exceptions_list = (ConnectionError, ConnectionTimeout,)
 
