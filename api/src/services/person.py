@@ -8,7 +8,7 @@ from fastapi import Depends
 
 from cache.abstract import Cache
 from cache.redis import RedisCache
-from db import redis
+from db import get_redis
 from models.person import Person
 from storage.abstract import Storage
 from storage.elastic import get_elastic_storage
@@ -119,7 +119,7 @@ class PersonService:
 
 @lru_cache()
 def get_person_redis_cache():
-    return RedisCache(redis.redis, persons_keybuilder)
+    return RedisCache(get_redis.redis, persons_keybuilder)
 
 
 @lru_cache()

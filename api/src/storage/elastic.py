@@ -5,7 +5,7 @@ import backoff
 from elasticsearch import AsyncElasticsearch
 from elasticsearch.exceptions import ConnectionError, ConnectionTimeout
 
-from db import elastic
+from db import get_elastic
 from storage.abstract import Storage
 
 exceptions_list = (ConnectionError, ConnectionTimeout,)
@@ -62,4 +62,4 @@ class ElasticStorage(Storage):
 
 
 def get_elastic_storage() -> ElasticStorage:
-    return ElasticStorage(es=elastic.es)
+    return ElasticStorage(es=get_elastic.es)

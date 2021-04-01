@@ -7,7 +7,7 @@ from fastapi import Depends
 
 from cache.abstract import Cache
 from cache.redis import RedisCache
-from db import redis
+from db import get_redis
 from models.genre import Genre
 from storage.abstract import Storage
 from storage.elastic import get_elastic_storage
@@ -125,7 +125,7 @@ class GenreService:
 
 @lru_cache()
 def get_genre_redis_cache():
-    return RedisCache(redis.redis, genres_keybuilder)
+    return RedisCache(get_redis.redis, genres_keybuilder)
 
 
 @lru_cache()

@@ -9,7 +9,7 @@ from aioredis import Redis
 from fastapi import Request
 
 from cache.abstract import Cache
-from db import redis
+from db import get_redis
 
 exceptions_list = (gaierror,)
 DEFAULT_TTL = 60
@@ -48,7 +48,7 @@ def cache_response(
             nonlocal ttl
             nonlocal query_args
 
-            cache = await redis.get_redis()
+            cache = await get_redis.get_redis()
             cache_key = key_builder(func, query_args, *args, **kwargs)
             resp = await cache.get(cache_key)
             if resp:
@@ -88,6 +88,6 @@ class RedisCache(Cache):
 
 def get_redis_cache(keybuilder: Callable[[UUID], str], ttl: int = DEFAULT_TTL):
     def inner():
-        return RedisCache(redis.redis, keybuilder, ttl)
+        return RedisCache(get_redis.redis, keybuilder, ttl)
 
     return inner

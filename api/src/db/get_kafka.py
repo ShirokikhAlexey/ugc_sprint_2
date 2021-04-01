@@ -1,4 +1,4 @@
-from kafka import KafkaProducer
+from get_kafka import KafkaProducer
 
 kafka_producer: KafkaProducer = None
 
