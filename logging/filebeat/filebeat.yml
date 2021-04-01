@@ -1,11 +1,19 @@
 filebeat.inputs:
-- type: log
-  enabled: true
-  paths:
-    - /var/log/nginx/*
-  json:
-    keys_under_root: true
-    add_error_key: true
+  - type: log
+    enabled: true
+    paths:
+      - /var/log/nginx/*
+    json:
+      keys_under_root: true
+      add_error_key: true
+
+  - type: log
+    enabled: true
+    paths:
+      - /var/log/backend/*
+    json:
+      keys_under_root: true
+      add_error_key: true
 
 output.logstash:
   enabled: true

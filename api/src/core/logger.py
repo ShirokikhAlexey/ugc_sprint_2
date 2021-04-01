@@ -1,8 +1,9 @@
 from os import getenv
+
 LOG_FORMAT = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 
-LOG_DEFAULT_HANDLERS = ['console', ]
-LOGS_PATH = getenv('LOGS_PATH', 'logs.log')
+LOG_DEFAULT_HANDLERS = ['filebeat', 'console']
+LOGS_PATH = getenv('LOGS_PATH', '../logs.log')
 
 # В логгере настраивается логгирование uvicorn-сервера.
 # Про логирование в Python можно прочитать в документации
@@ -40,7 +41,6 @@ LOGGING = {
             'level': 'DEBUG',
             'class': 'logging.FileHandler',
             'filename': LOGS_PATH,
-            'mode': 'a',
             'formatter': 'json',
         },
         'default': {

@@ -1,5 +1,6 @@
-from kafka import KafkaProducer
 from time import sleep
+
+from kafka import KafkaProducer
 
 producer = KafkaProducer(bootstrap_servers=['localhost:9092'])
 

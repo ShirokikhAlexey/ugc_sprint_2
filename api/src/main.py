@@ -1,7 +1,7 @@
 import logging
+from typing import Optional
 
 import aioredis
-import logstash
 import sentry_sdk
 import uvicorn as uvicorn
 from asgi_request_id import RequestIDMiddleware, get_request_id
@@ -9,7 +9,7 @@ from elasticsearch import AsyncElasticsearch
 from fastapi import FastAPI
 from fastapi.responses import ORJSONResponse
 from sentry_sdk.integrations.asgi import SentryAsgiMiddleware
-from typing import Optional
+
 from api.v1 import film, genre, person
 from core import config
 from core.logger import LOGGING
@@ -56,8 +56,6 @@ class RequestIdFilter(logging.Filter):
         record.request_id = r_id
         return True
 
-
-#uvicorn.config.logger.addHandler(logging.FileHandler(config.LOGS_PATH, mode="w"))
 
 uvicorn.config.logger.addFilter(RequestIdFilter())
 

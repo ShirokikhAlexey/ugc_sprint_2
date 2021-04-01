@@ -1,7 +1,7 @@
 import os
-from dotenv import find_dotenv, load_dotenv
 
 from clickhouse_driver import Client
+from dotenv import find_dotenv, load_dotenv
 
 load_dotenv(find_dotenv())
 
