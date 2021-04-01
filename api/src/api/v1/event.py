@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends
 from event_services.event import get_event_service, EventService
-from event_models.event import BaseEvent
+from event_models.base_event import BaseEvent
 from api.v1.models import EventResp
 
 router = APIRouter()
