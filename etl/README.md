@@ -1,13 +1,14 @@
 # Инструкция по запуску
+
 ```bash
 pip install clickhouse-driver
 ```
 
 Запуск kafka и clickhouse
+
 ```bash
 docker-compose -f clickhouse/docker-compose.yml  -f kafka/docker-compose.yml up --build
 ```
-
 
 Запустить кликхаус, при необходимости заменить значения констант адресов кафки и кликхауса на соответсвующие.
 

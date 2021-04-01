@@ -5,6 +5,7 @@ from core.logger import LOGGING
 
 # Применяем настройки логирования
 logging_config.dictConfig(LOGGING)
+SENTRY_DSN = "https://2505ae73da014cb58f79105054c99444@o558819.ingest.sentry.io/5692867"
 
 # Название проекта. Используется в Swagger-документации
 PROJECT_NAME = os.getenv('PROJECT_NAME', 'movies-api')
