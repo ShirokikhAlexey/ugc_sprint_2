@@ -16,16 +16,23 @@ class Storage(ABC):
         pass
 
     @abstractmethod
-    async def search(self, index: str, body: Optional[Dict] = None, params: Optional[Dict] = None) -> Tuple[
-        int, List[UUID]]:
+    async def search(
+            self,
+            index: str,
+            body: Optional[Dict] = None,
+            params: Optional[Dict] = None
+            ) -> Tuple[int, List[UUID]]:
         """
         Поиск по объектам
         """
         pass
 
     @abstractmethod
-    async def msearch(self, index: str, body: Optional[List[Dict]] = None, params: Optional[Dict] = None) -> List[
-        Optional[List[UUID]]]:
+    async def msearch(
+            self,
+            index: str,
+            body: Optional[List[Dict]] = None,
+            params: Optional[Dict] = None) -> List[Optional[List[UUID]]]:
         """
         Несколько поисковых запросов в одном
         """

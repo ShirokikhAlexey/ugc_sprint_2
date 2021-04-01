@@ -142,3 +142,7 @@ class FilmShortList(BaseModel):
 
 class PaginatedFilmShortList(PaginatedList):
     result: List[FilmShort]
+
+
+class EventResp(BaseModel):
+    success: bool

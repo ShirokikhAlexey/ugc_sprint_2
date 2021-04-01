@@ -29,8 +29,11 @@ class MockStorage(Storage):
         result = list(filter(lambda x: UUID(x['id']) in ids, self.data[index]))
         return result
 
-    async def search(self, index: str, body: Optional[Dict] = None, params: Optional[Dict] = None) -> Tuple[
-        int, List[UUID]]:
+    async def search(
+            self,
+            index: str,
+            body: Optional[Dict] = None,
+            params: Optional[Dict] = None) -> Tuple[int, List[UUID]]:
         """
         Поиск по объектам
         """
@@ -39,8 +42,11 @@ class MockStorage(Storage):
             result.append(UUID(o['id']))
         return (len(result), result)
 
-    async def msearch(self, index: str, body: Optional[List[Dict]] = None, params: Optional[Dict] = None) -> List[
-        List[UUID]]:
+    async def msearch(
+            self,
+            index: str,
+            body: Optional[List[Dict]] = None,
+            params: Optional[Dict] = None) -> List[List[UUID]]:
         """
         Несколько поисковых запросов в одном
         """

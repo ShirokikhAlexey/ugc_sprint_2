@@ -35,6 +35,9 @@ services:
       - /tmp/logs/backend/:/var/log/backend/
     ports:
       - 8888:8888
+    environment:
+      BROKER_HOST: broker
+      BROKER_PORT: 29092
     depends_on:
       - es01
       - redis
