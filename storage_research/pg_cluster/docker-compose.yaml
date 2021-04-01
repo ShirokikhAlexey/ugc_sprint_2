@@ -1,0 +1,12 @@
+version: '3.3'
+services:
+
+  film-db:
+    image: postgres:12.5
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=pass
+    volumes:
+      - ./schema.sql:/docker-entrypoint-initdb.d/schema.sql:ro
+    ports:
+      - 5432:5432
