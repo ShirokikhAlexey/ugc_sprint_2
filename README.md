@@ -1,4 +1,6 @@
-# Проектная работа 8 спринта
+# Проектная работа 8 спринта [![CI](https://github.com/dmitry-yandex-practise/ugc_sprint_2/actions/workflows/python.yml/badge.svg)](https://github.com/dmitry-yandex-practise/ugc_sprint_2/actions/workflows/python.yml)
+
+
 
 ## Запуск приложения
 
