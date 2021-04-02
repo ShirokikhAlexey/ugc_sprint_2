@@ -51,7 +51,7 @@ jobs:
     
     - name: type check
       run: |
-        mypy api/ --html-report /tmp/mypy-report --no-error-summary
+        mypy api/ --html-report /tmp/mypy-report --ignore-missing-imports
 
     - uses: actions/upload-artifact@v2
       with:

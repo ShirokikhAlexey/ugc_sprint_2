@@ -1,5 +1,5 @@
-from event_producer.kafka import get_kafka_event_producer
-from event_producer.abstract import EventProducer
+from event_producer.kafka_event_producer import get_kafka_event_producer
+from event_producer.abstract_event_producer import EventProducer
 from functools import lru_cache
 
 from fastapi import Depends

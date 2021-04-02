@@ -41,7 +41,7 @@ class ElasticStorage(Storage):
         params.update({"_source": False, })
         docs = await self.elastic.search(index=index, body=body, params=params)
         ids = [UUID(doc['_id']) for doc in docs['hits']['hits']]
-        total = docs['hits']['total']['value']
+        total: int = docs['hits']['total']['value']
         return (total, ids)
 
     @backoff.on_exception(backoff.expo, exceptions_list, max_tries=10)
@@ -55,7 +55,7 @@ class ElasticStorage(Storage):
         Несколько поисковых запросов в одном
         """
         response = await self.elastic.msearch(index=index, body=body, params=params)
-        result = []
+        result: List[Optional[List[UUID]]] = []
         for docs in response['responses']:
             result.append([UUID(doc['_id']) for doc in docs['hits']['hits']])
         return result

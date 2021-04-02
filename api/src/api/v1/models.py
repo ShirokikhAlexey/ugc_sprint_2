@@ -63,7 +63,10 @@ class Director(PersonShort):
     pass
 
 
-class Person(PersonShort):
+class Person(BaseModel):
+    id: UUID
+    name: str = Field(
+        ..., description="Имя персоны")
     actor: List[UUID] = Field(
         ..., description="Список id фильмов, в которых персона участвовала в качестве актёра")
     writer: List[UUID] = Field(

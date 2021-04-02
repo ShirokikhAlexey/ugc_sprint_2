@@ -1,6 +1,6 @@
 from kafka import KafkaProducer
 
-from event_producer.abstract import EventProducer
+from event_producer.abstract_event_producer import EventProducer
 from db import get_kafka
 
 

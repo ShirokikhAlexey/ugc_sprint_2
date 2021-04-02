@@ -1,6 +1,6 @@
 from collections import OrderedDict
 from functools import lru_cache
-from typing import Optional, List, Tuple
+from typing import Optional, List, Tuple, Dict
 from uuid import UUID
 
 from fastapi import Depends
@@ -19,7 +19,7 @@ def genres_keybuilder(genre_id: UUID) -> str:
     return f'genre:{str(genre_id)}'
 
 
-def _build_genre_serch_query(name: str) -> List:
+def _build_genre_serch_query(name: str) -> Dict:
     query = {
         'query': {
             'match': {
@@ -58,7 +58,7 @@ class GenreService:
 
     async def list(self,
                    page_number: int,
-                   page_size: int) -> Tuple[int, List[Genre]]:
+                   page_size: int) -> Tuple[int, List[Optional[Genre]]]:
         """
         Возвращает все жанры
         """
@@ -75,7 +75,7 @@ class GenreService:
         for genre_id in genres.keys():
             data = await self.cache.get(genre_id)
             if data:
-                genres[genre_id] = Genre.parse_raw(data)
+                genres[genre_id] = Genre.parse_raw(data)  # type: ignore
 
         # не найденные в кеше жанры запрашиваем в эластике и кладём в кеш
         not_found = [genre_id for genre_id in genres.keys()
@@ -85,10 +85,10 @@ class GenreService:
             for doc in docs:
                 genre = Genre(**doc)
                 await self.cache.put(genre.id, genre.json())
-                genres[genre.id] = genre
-        return (genres_total, list(genres.values()))
+                genres[genre.id] = genre  # type: ignore
+        return genres_total, list(genres.values())
 
-    async def get_by_ids(self, genre_ids: List[UUID]) -> Optional[List[Genre]]:
+    async def get_by_ids(self, genre_ids: List[UUID]) -> List[Optional[Genre]]:
         """
         Возвращает жанры по списку id.
         """
@@ -98,7 +98,7 @@ class GenreService:
         for genre_id in genres.keys():
             data = await self.cache.get(genre_id)
             if data:
-                genres[genre_id] = Genre.parse_raw(data)
+                genres[genre_id] = Genre.parse_raw(data)  # type: ignore
 
         # не найденные в кеше жанры запрашиваем в эластике и кладём в кеш
         not_found = [genre_id for genre_id in genres.keys()
@@ -108,10 +108,10 @@ class GenreService:
             for doc in docs:
                 genre = Genre(**doc)
                 await self.cache.put(genre.id, genre.json())
-                genres[genre.id] = genre
+                genres[genre.id] = genre  # type: ignore
         return list(genres.values())
 
-    async def search(self, query: str) -> Optional[List[Genre]]:
+    async def search(self, query: str) -> Optional[List[Optional[Genre]]]:
         """
         Поиск по жанрам.
         """

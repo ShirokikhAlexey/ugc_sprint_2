@@ -5,7 +5,7 @@ from fastapi import APIRouter, Depends, HTTPException, Query, Request
 from fastapi import status
 
 from api.v1.common import pagination
-from api.v1.models import PersonList, Person, PaginatedPersonShortList, PersonShort, FilmShortList, FilmShort
+from api.v1.models import PersonList, Person, PaginatedPersonShortList, PersonShort, FilmShortList, FilmShort, Film
 from cache.redis import cache_response
 from services.film import FilmService, get_film_service
 from services.person import PersonService, get_person_service
@@ -50,7 +50,7 @@ async def person_films(
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                             detail='person not found')
     person_films_by_role = await film_service.get_by_person_id(person.id)
-    person_films = []
+    person_films: List[Film] = []
     if role is None:
         for films in person_films_by_role.values():
             person_films.extend(films)
