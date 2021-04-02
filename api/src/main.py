@@ -15,6 +15,7 @@ from core import config
 from core.logger import LOGGING
 from db import get_elastic, get_redis
 
+
 sentry_sdk.init(dsn=config.SENTRY_DSN, traces_sample_rate=1.0)
 
 app = FastAPI(
