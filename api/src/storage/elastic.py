@@ -5,8 +5,8 @@ import backoff
 from elasticsearch import AsyncElasticsearch
 from elasticsearch.exceptions import ConnectionError, ConnectionTimeout
 
-from db import elastic
-from storage.abstract import Storage
+from db import get_elastic
+from storage.abstract_storage import Storage
 
 exceptions_list = (ConnectionError, ConnectionTimeout,)
 
@@ -41,7 +41,7 @@ class ElasticStorage(Storage):
         params.update({"_source": False, })
         docs = await self.elastic.search(index=index, body=body, params=params)
         ids = [UUID(doc['_id']) for doc in docs['hits']['hits']]
-        total = docs['hits']['total']['value']
+        total: int = docs['hits']['total']['value']
         return (total, ids)
 
     @backoff.on_exception(backoff.expo, exceptions_list, max_tries=10)
@@ -55,11 +55,11 @@ class ElasticStorage(Storage):
         Несколько поисковых запросов в одном
         """
         response = await self.elastic.msearch(index=index, body=body, params=params)
-        result = []
+        result: List[Optional[List[UUID]]] = []
         for docs in response['responses']:
             result.append([UUID(doc['_id']) for doc in docs['hits']['hits']])
         return result
 
 
 def get_elastic_storage() -> ElasticStorage:
-    return ElasticStorage(es=elastic.es)
+    return ElasticStorage(es=get_elastic.es)

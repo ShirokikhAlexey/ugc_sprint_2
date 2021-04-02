@@ -13,7 +13,8 @@ from sentry_sdk.integrations.asgi import SentryAsgiMiddleware
 from api.v1 import film, genre, person
 from core import config
 from core.logger import LOGGING
-from db import elastic, redis
+from db import get_elastic, get_redis
+
 
 sentry_sdk.init(dsn=config.SENTRY_DSN, traces_sample_rate=1.0)
 
@@ -30,15 +31,15 @@ app.add_middleware(SentryAsgiMiddleware)
 
 @app.on_event('startup')
 async def startup():
-    redis.redis = await aioredis.create_redis_pool((config.REDIS_HOST, config.REDIS_PORT), minsize=10, maxsize=20)
-    elastic.es = AsyncElasticsearch(
+    get_redis.redis = await aioredis.create_redis_pool((config.REDIS_HOST, config.REDIS_PORT), minsize=10, maxsize=20)
+    get_elastic.es = AsyncElasticsearch(
         hosts=[f'{config.ELASTIC_HOST}:{config.ELASTIC_PORT}'])
 
 
 @app.on_event('shutdown')
 async def shutdown():
-    redis.redis.close()
-    await elastic.es.close()
+    get_redis.redis.close()
+    await get_elastic.es.close()
 
 
 app.add_middleware(

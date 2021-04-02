@@ -1,16 +1,16 @@
 from collections import OrderedDict
 from enum import Enum
 from functools import lru_cache
-from typing import List, Optional, Tuple
+from typing import List, Optional, Tuple, Dict
 from uuid import UUID
 
 from fastapi import Depends
 
-from cache.abstract import Cache
+from cache.abstract_cache import Cache
 from cache.redis import RedisCache
-from db import redis
+from db import get_redis
 from models.person import Person
-from storage.abstract import Storage
+from storage.abstract_storage import Storage
 from storage.elastic import get_elastic_storage
 
 PERSONS_INDEX = 'persons'
@@ -26,7 +26,7 @@ def persons_keybuilder(person_id: UUID) -> str:
     return f'person:{str(person_id)}'
 
 
-def _build_person_serch_query(name: str) -> List:
+def _build_person_serch_query(name: str) -> Dict:
     query = {
         'query': {
             'match': {
@@ -50,7 +50,7 @@ class PersonService:
 
     async def list(self,
                    page_number: int,
-                   page_size: int) -> Tuple[int, List[Person]]:
+                   page_size: int) -> Tuple[int, Optional[List[Optional[Person]]]]:
         """
         Возвращает все персоны
         """
@@ -62,9 +62,9 @@ class PersonService:
         }
         persons_total, person_ids = await self.storage.search(self._index, params=params)
         persons = await self.get_by_ids(person_ids)
-        return (persons_total, persons)
+        return persons_total, persons
 
-    async def get_by_id(self, person_id: UUID) -> List[Person]:
+    async def get_by_id(self, person_id: UUID) -> Optional[Person]:
 
         """
         Возвращает объект персоны. Он опционален, так как
@@ -82,7 +82,7 @@ class PersonService:
         await self.cache.put(person.id, person.json())
         return person
 
-    async def get_by_ids(self, person_ids: List[UUID]) -> Optional[List[Person]]:
+    async def get_by_ids(self, person_ids: List[UUID]) -> Optional[List[Optional[Person]]]:
         """
         Возвращает персоны по списку id.
         """
@@ -92,7 +92,7 @@ class PersonService:
         for person_id in persons.keys():
             data = await self.cache.get(person_id)
             if data:
-                persons[person_id] = Person.parse_raw(data)
+                persons[person_id] = Person.parse_raw(data)  # type: ignore
 
         # не найденные в кеше персоны запрашиваем в эластике и кладём в кеш
         not_found = [person_id for person_id in persons.keys()
@@ -100,12 +100,12 @@ class PersonService:
         if not_found:
             docs = await self.storage.get_by_ids(self._index, not_found)
             for doc in docs:
-                person = Person(**doc)
+                person: Person = Person(**doc)
                 await self.cache.put(person.id, person.json())
-                persons[person.id] = person
+                persons[person.id] = person  # type: ignore
         return list(persons.values())
 
-    async def search(self, query: str) -> Optional[List[Person]]:
+    async def search(self, query: str) -> Optional[List]:
         """
         Поиск по персонам.
         """
@@ -119,7 +119,7 @@ class PersonService:
 
 @lru_cache()
 def get_person_redis_cache():
-    return RedisCache(redis.redis, persons_keybuilder)
+    return RedisCache(get_redis.redis, persons_keybuilder)
 
 
 @lru_cache()

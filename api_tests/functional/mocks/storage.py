@@ -6,7 +6,7 @@ from uuid import UUID
 from services.film import FILMS_INDEX
 from services.genre import GENRES_INDEX
 from services.person import PERSONS_INDEX
-from storage.abstract import Storage
+from storage.abstract_storage import Storage
 
 TESTDATA_PATH = os.path.join(os.path.dirname(__file__), '../testdata/storage')
 

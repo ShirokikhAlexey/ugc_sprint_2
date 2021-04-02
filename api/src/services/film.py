@@ -9,11 +9,11 @@ from fastapi import Depends
 from pydantic import BaseModel
 from starlette.datastructures import QueryParams
 
-from cache.abstract import Cache
+from cache.abstract_cache import Cache
 from cache.redis import RedisCache
-from db import redis
+from db import get_redis
 from models.film import Film
-from storage.abstract import Storage
+from storage.abstract_storage import Storage
 from storage.elastic import get_elastic_storage
 
 DEFAULT_LIST_SIZE = 1000
@@ -98,7 +98,7 @@ def _build_filter_query(filter_by: FilterBy) -> Dict:
     """
     Формирует поисковый запрос для фильтрации по аттрибутам фильма
     """
-    path = FILTERBY_PATHS.get(filter_by.attr, 'actors')
+    path = FILTERBY_PATHS.get(filter_by.attr, 'actors')  # type: ignore
     return {
         'query': {
             'nested': {
@@ -112,7 +112,7 @@ def _build_filter_query(filter_by: FilterBy) -> Dict:
 
 
 def _build_person_role_query(person_id: UUID) -> List:
-    result = []
+    result: List[Dict] = []
     for role in Roles:
         result.append({})
         result.append(
@@ -130,8 +130,8 @@ def _build_person_role_query(person_id: UUID) -> List:
     return result
 
 
-def _build_film_serch_query(query: str) -> List:
-    query = {
+def _build_film_search_query(query: str) -> Dict:
+    query_dict = {
         'query': {
             'multi_match': {
                 'query': query,
@@ -140,7 +140,7 @@ def _build_film_serch_query(query: str) -> List:
         }
     }
 
-    return query
+    return query_dict
 
 
 class FilmService:
@@ -171,7 +171,7 @@ class FilmService:
                    page_number: int,
                    page_size: int,
                    sort_by: Optional[SortBy] = None,
-                   filter_by: Optional[FilterBy] = None, ) -> Tuple[int, List[Film]]:
+                   filter_by: Optional[FilterBy] = None, ) -> Tuple[int, List[Optional[Film]]]:
         """
         Возвращает общее количество фильмов и список фильмов с учётом сортировки и фильтрации.
         """
@@ -181,16 +181,16 @@ class FilmService:
             'from': page_size * (page_number - 1)
         }
         if sort_by:
-            params.update({'sort': f'{sort_by.attr}:{sort_by.order.value}'})
+            params.update({'sort': f'{sort_by.attr}:{sort_by.order.value}'}) # type: ignore
         body = None
         if filter_by:
             body = _build_filter_query(filter_by)
         films_total, film_ids = await self.storage.search(self._index, body, params)
 
         films = await self.get_by_ids(film_ids)
-        return (films_total, films)
+        return films_total, films
 
-    async def get_by_person_id(self, person_id: UUID) -> Dict[Roles, List[Film]]:
+    async def get_by_person_id(self, person_id: UUID) -> Dict[str, List[Optional[Film]]]:
         """
         Возвращает фильмы в которых участвовала персона
         в разрезе по ролям
@@ -210,7 +210,7 @@ class FilmService:
 
         return films_by_role
 
-    async def get_by_ids(self, film_ids: List[UUID]) -> Optional[List[Film]]:
+    async def get_by_ids(self, film_ids: List[UUID]) -> List[Optional[Film]]:
         """
         Возвращает фильмы по списку id.
         """
@@ -220,7 +220,7 @@ class FilmService:
         for film_id in films.keys():
             data = await self.cache.get(film_id)
             if data:
-                films[film_id] = Film.parse_raw(data)
+                films[film_id] = Film.parse_raw(data)  # type: ignore
 
         # не найденные в кеше персоны запрашиваем в эластике и кладём в кеш
         not_found = [film_id for film_id in films.keys()
@@ -230,14 +230,14 @@ class FilmService:
             for doc in docs:
                 film = Film(**doc)
                 await self.cache.put(film.id, film.json())
-                films[film.id] = film
+                films[film.id] = film  # type: ignore
         return list(films.values())
 
-    async def search(self, query: str) -> Optional[List[Film]]:
+    async def search(self, query: str) -> Optional[List[Optional[Film]]]:
         """
         Поиск по фильмам.
         """
-        body = _build_film_serch_query(query)
+        body = _build_film_search_query(query)
         _, person_ids = await self.storage.search(self._index, body)
         if not person_ids:
             return None
@@ -247,7 +247,7 @@ class FilmService:
 
 @lru_cache()
 def get_film_redis_cache():
-    return RedisCache(redis.redis, films_keybuilder)
+    return RedisCache(get_redis.redis, films_keybuilder)
 
 
 @lru_cache()

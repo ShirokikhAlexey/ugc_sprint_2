@@ -1,7 +1,7 @@
 from kafka import KafkaProducer
 
-from event_producer.abstract import EventProducer
-from db import kafka
+from event_producer.abstract_event_producer import EventProducer
+from db import get_kafka
 
 
 class KafkaEventProducer(EventProducer):
@@ -19,4 +19,4 @@ class KafkaEventProducer(EventProducer):
 
 
 def get_kafka_event_producer() -> KafkaEventProducer:
-    return KafkaEventProducer(producer=kafka.kafka_producer)
+    return KafkaEventProducer(producer=get_kafka.kafka_producer)

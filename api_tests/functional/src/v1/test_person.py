@@ -3,7 +3,7 @@ from fastapi.testclient import TestClient
 from api_tests.functional.mocks.cache import get_emptycache_mock
 from api_tests.functional.mocks.redis import get_mock_redis
 from api_tests.functional.mocks.storage import get_mock_storage
-from db import redis
+from db import get_redis
 from main import app
 from services.person import get_person_redis_cache
 from storage.elastic import get_elastic_storage
@@ -13,7 +13,7 @@ client = TestClient(app)
 app.dependency_overrides[get_person_redis_cache] = get_emptycache_mock
 app.dependency_overrides[get_elastic_storage] = get_mock_storage
 
-redis.redis = get_mock_redis()
+get_redis.redis = get_mock_redis()
 
 
 def test_list_persons():
